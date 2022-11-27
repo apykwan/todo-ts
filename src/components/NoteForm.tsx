@@ -1,5 +1,5 @@
 import { FormEvent, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { v4 as uuidV4 } from 'uuid';
 import Stack from 'react-bootstrap/Stack';
 import Col from 'react-bootstrap/Col';
@@ -21,6 +21,7 @@ function NoteForm({ onSubmit, onAddTag, availableTags }: NoteFormProps) {
   const titleRef = useRef<HTMLInputElement>(null);
   const markDownRef = useRef<HTMLTextAreaElement>(null);
   const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
+  const navigate = useNavigate();
   
   function handleSubmit (e: FormEvent) {
     e.preventDefault();
@@ -28,8 +29,9 @@ function NoteForm({ onSubmit, onAddTag, availableTags }: NoteFormProps) {
     onSubmit({
       title: titleRef.current!.value,
       markdown: markDownRef.current!.value,
-      tags: []
+      tags: selectedTags
     });
+    navigate("..");
   }
   
   return (
@@ -48,10 +50,10 @@ function NoteForm({ onSubmit, onAddTag, availableTags }: NoteFormProps) {
                   onAddTag(newTag)
                   setSelectedTags(prev => [...prev, newTag])
                 }}
-                value={selectedTags.map(tag => {
+                value={selectedTags?.map(tag => {
                   return { label: tag.label, value: tag.id }
                 })}
-                options={availableTags.map(tag => {
+                options={availableTags?.map(tag => {
                   return { label: tag.label, value: tag.id }
                 })}
                 onChange={tags => {

@@ -15,12 +15,19 @@ type NoteFormProps = {
   onSubmit: (data: NoteData) => void;
   onAddTag: (tag: Tag) => void;
   availableTags: Tag[];
-}
+} & Partial<NoteData>
 
-function NoteForm({ onSubmit, onAddTag, availableTags }: NoteFormProps) {
+function NoteForm({ 
+    onSubmit, 
+    onAddTag, 
+    availableTags, 
+    title = "", 
+    markdown = "",
+    tags = [] 
+  }: NoteFormProps) {
   const titleRef = useRef<HTMLInputElement>(null);
   const markDownRef = useRef<HTMLTextAreaElement>(null);
-  const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
+  const [selectedTags, setSelectedTags] = useState<Tag[]>(tags);
   const navigate = useNavigate();
   
   function handleSubmit (e: FormEvent) {
@@ -40,7 +47,7 @@ function NoteForm({ onSubmit, onAddTag, availableTags }: NoteFormProps) {
         <Row>
           <Form.Group as={Col} controlId="title">
               <Form.Label>Title</Form.Label>
-              <Form.Control ref={titleRef} required />
+              <Form.Control ref={titleRef} required defaultValue={title} />
             </Form.Group>
             <Form.Group as={Col} controlId="tag">
               <Form.Label>Tag</Form.Label>
@@ -70,7 +77,8 @@ function NoteForm({ onSubmit, onAddTag, availableTags }: NoteFormProps) {
         <Form.Group controlId="markdown">
           <Form.Label>Body</Form.Label>
           <Form.Control 
-            ref={markDownRef} 
+            ref={markDownRef}
+            defaultValue={markdown} 
             className={styles.textarea} 
             as="textarea" 
             rows={15} 
